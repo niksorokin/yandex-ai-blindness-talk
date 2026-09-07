@@ -3,499 +3,490 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AI-слепота: почему обучили всех, а работа не изменилась — Silow</title>
-  <meta name="x-marker" content="YABT_SCROLL_SILOW_V4_20260907" />
-  <meta name="description" content="Скролл-презентация для воркшопа Яндекса: agent-first модель работы, AI-грамотность и Silow." />
+  <title>AI-слепота: чему учить после первого курса по AI — Silow</title>
+  <meta name="x-marker" content="YABT_SCROLL_SILOW_V5_GPT_EDITOR_20260907" />
+  <meta name="description" content="Скролл-презентация для Yandex AI-literacy workshop: чему учить после базового AI-курса, как сетапить агентов и коннекторы, как начать без записи работы." />
   <style>
     @font-face { font-family: Suisse; src: url('./fonts/SuisseIntl-Regular.otf') format('opentype'); font-weight: 400; font-style: normal; font-display: swap; }
     @font-face { font-family: Suisse; src: url('./fonts/SuisseIntl-Medium.otf') format('opentype'); font-weight: 500; font-style: normal; font-display: swap; }
     @font-face { font-family: Suisse; src: url('./fonts/SuisseIntl-SemiBold.otf') format('opentype'); font-weight: 650; font-style: normal; font-display: swap; }
     @font-face { font-family: SuisseMono; src: url('./fonts/SuisseIntlMono-Regular.otf') format('opentype'); font-weight: 400; font-style: normal; font-display: swap; }
-
-    :root {
-      --paper: #f7f5ef;
-      --ink: #111111;
-      --muted: #676158;
-      --faint: #ded8cc;
-      --hair: rgba(17,17,17,.14);
-      --cobalt: #1244ff;
-      --cobalt-soft: rgba(18,68,255,.08);
-      --card: #fffdf8;
-      --shadow: 0 24px 80px rgba(27, 23, 15, .08);
-      --gutter: clamp(20px, 5vw, 72px);
-      --top: clamp(24px, 4vw, 52px);
-      --h1: clamp(58px, 9.6vw, 142px);
-      --h2: clamp(42px, 6.6vw, 96px);
-      --body: clamp(23px, 2.25vw, 36px);
-      --small: clamp(13px, 1.04vw, 16px);
-    }
-
-    * { box-sizing: border-box; }
-    html { scroll-behavior: smooth; background: var(--paper); color: var(--ink); }
-    body {
-      margin: 0;
-      font-family: Suisse, Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      color: var(--ink);
-      background:
-        linear-gradient(90deg, transparent 0, transparent calc(var(--gutter) - 1px), var(--hair) calc(var(--gutter) - 1px), var(--hair) var(--gutter), transparent var(--gutter)),
-        linear-gradient(90deg, transparent 0, transparent calc(100vw - var(--gutter)), var(--hair) calc(100vw - var(--gutter)), var(--hair) calc(100vw - var(--gutter) + 1px), transparent calc(100vw - var(--gutter) + 1px)),
-        var(--paper);
-      -webkit-font-smoothing: antialiased;
-      text-rendering: geometricPrecision;
-    }
-
-    .topbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 50;
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      align-items: center;
-      padding: 14px var(--gutter) 11px;
-      color: rgba(17,17,17,.74);
-      font-family: SuisseMono, monospace;
-      font-size: 11px;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      border-bottom: 1px solid rgba(17,17,17,.08);
-      background: color-mix(in srgb, var(--paper) 86%, transparent);
-      backdrop-filter: blur(16px);
-    }
-    .topbar .brand { color: var(--ink); font-weight: 400; }
-    .topbar .middle { color: var(--cobalt); }
-    .topbar .right { text-align: right; }
-
-    .progress {
-      position: fixed;
-      z-index: 60;
-      top: 42px;
-      left: 0;
-      height: 2px;
-      width: 0;
-      background: var(--cobalt);
-      transform-origin: left center;
-    }
-
-    .slide {
-      min-height: 100vh;
-      padding: calc(var(--top) + 52px) var(--gutter) var(--top);
-      display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      align-content: center;
-      position: relative;
-      border-bottom: 1px solid var(--hair);
-      scroll-snap-align: start;
-    }
-    @supports (height: 100svh) { .slide { min-height: 100svh; } }
-
-    .slide-inner {
-      width: min(100%, 1600px);
-      margin: 0 auto;
-      display: grid;
-      grid-template-columns: minmax(0, 1fr);
-      gap: clamp(24px, 4vw, 56px);
-    }
-
-    .eyebrow {
-      font-family: SuisseMono, monospace;
-      font-size: var(--small);
-      line-height: 1.25;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: var(--cobalt);
-      display: flex;
-      gap: 14px;
-      align-items: center;
-    }
-    .eyebrow::before {
-      content: "";
-      width: 34px;
-      height: 1px;
-      background: var(--cobalt);
-      display: block;
-    }
-
-    h1, h2, h3, p { margin: 0; }
-    h1, h2 {
-      font-weight: 500;
-      line-height: .91;
-      letter-spacing: -.075em;
-      max-width: 15ch;
-    }
-    h1 { font-size: var(--h1); }
-    h2 { font-size: var(--h2); }
-
-    .lede {
-      font-size: clamp(25px, 3vw, 46px);
-      line-height: 1.04;
-      letter-spacing: -.045em;
-      max-width: 34ch;
-      color: var(--ink);
-    }
-    .copy {
-      font-size: var(--body);
-      line-height: 1.08;
-      letter-spacing: -.04em;
-      max-width: 42ch;
-      color: var(--ink);
-    }
-    .muted { color: var(--muted); }
-    .blue { color: var(--cobalt); }
-
-    .split {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(330px, .72fr);
-      gap: clamp(28px, 5vw, 92px);
-      align-items: end;
-    }
-    .split.top { align-items: start; }
-
-    .rail-note {
-      border-left: 2px solid var(--cobalt);
-      padding-left: clamp(18px, 2vw, 28px);
-      color: var(--ink);
-      font-size: clamp(20px, 1.8vw, 30px);
-      line-height: 1.14;
-      letter-spacing: -.035em;
-      max-width: 34ch;
-    }
-
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 14px;
-    }
-    .card {
-      min-height: 210px;
-      background: var(--card);
-      border: 1px solid var(--hair);
-      box-shadow: var(--shadow);
-      border-radius: 18px;
-      padding: clamp(20px, 2.3vw, 34px);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 28px;
-    }
-    .card h3 {
-      font-size: clamp(24px, 2.6vw, 44px);
-      line-height: .96;
-      letter-spacing: -.055em;
-      font-weight: 500;
-    }
-    .card p, .card li {
-      font-size: clamp(16px, 1.35vw, 23px);
-      line-height: 1.16;
-      letter-spacing: -.025em;
-      color: var(--muted);
-    }
-    .card ul { margin: 0; padding-left: 1em; display: grid; gap: .45em; }
-    .card.small { min-height: 172px; }
-    .card.outline { background: transparent; box-shadow: none; }
-
-    .process {
-      display: grid;
-      gap: 10px;
-      font-size: clamp(19px, 1.8vw, 30px);
-      line-height: 1.1;
-      letter-spacing: -.035em;
-    }
-    .step {
-      display: grid;
-      grid-template-columns: 58px 1fr;
-      gap: 16px;
-      padding: 16px 0;
-      border-bottom: 1px solid var(--hair);
-      align-items: start;
-    }
-    .num { font-family: SuisseMono, monospace; color: var(--cobalt); font-size: var(--small); letter-spacing: .08em; padding-top: .2em; }
-
-    .flow {
-      display: grid;
-      grid-template-columns: 1fr auto 1fr;
-      gap: clamp(18px, 3vw, 38px);
-      align-items: stretch;
-    }
-    .flow .arrow {
-      display: grid;
-      place-items: center;
-      font-family: SuisseMono, monospace;
-      color: var(--cobalt);
-      font-size: clamp(26px, 4vw, 62px);
-    }
-    .tag {
-      font-family: SuisseMono, monospace;
-      font-size: 11px;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: var(--cobalt);
-      margin-bottom: 18px;
-      display: block;
-    }
-
-    .bigline {
-      font-size: clamp(46px, 7.4vw, 120px);
-      line-height: .91;
-      letter-spacing: -.075em;
-      font-weight: 500;
-      max-width: 16ch;
-    }
-    .quote {
-      padding: clamp(26px, 4vw, 58px);
-      border: 1px solid var(--hair);
-      border-radius: 24px;
-      background: var(--card);
-      box-shadow: var(--shadow);
-      font-size: clamp(32px, 4.4vw, 76px);
-      line-height: .95;
-      letter-spacing: -.065em;
-      font-weight: 500;
-    }
-
-    .footer-note {
-      position: absolute;
-      left: var(--gutter);
-      right: var(--gutter);
-      bottom: 18px;
-      display: flex;
-      justify-content: space-between;
-      gap: 20px;
-      font-family: SuisseMono, monospace;
-      font-size: 10px;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: rgba(17,17,17,.42);
-    }
-
-    a { color: inherit; text-decoration: none; }
-    .link { color: var(--cobalt); border-bottom: 1px solid currentColor; }
-
-    .appendix {
-      padding: clamp(70px, 9vw, 130px) var(--gutter);
-      display: grid;
-      gap: 28px;
-      background: #111;
-      color: #f8f5ed;
-      border-top: 1px solid #111;
-    }
-    .appendix h2 { max-width: 18ch; color: #f8f5ed; }
-    .appendix p { color: rgba(248,245,237,.76); }
-    .appendix .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 12px; }
-    .button {
-      border: 1px solid rgba(248,245,237,.28);
-      border-radius: 999px;
-      padding: 13px 18px 12px;
-      font-family: SuisseMono, monospace;
-      font-size: 12px;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: #f8f5ed;
-    }
-    .button.primary { background: var(--cobalt); border-color: var(--cobalt); }
-
-    @media (max-width: 980px) {
-      body { background: var(--paper); }
-      .topbar { grid-template-columns: 1fr; gap: 3px; align-items: start; }
-      .topbar .middle, .topbar .right { display: none; }
-      .slide { padding-top: 88px; }
-      .split, .flow { grid-template-columns: 1fr; }
-      .flow .arrow { justify-content: start; transform: rotate(90deg); height: 38px; }
-      .cards { grid-template-columns: 1fr; }
-      .card { min-height: auto; }
-      .footer-note { display: none; }
-      h1, h2, .bigline { max-width: 100%; }
-      .quote { border-radius: 18px; }
-    }
-
-    @media print {
-      .topbar, .progress, .footer-note { display: none; }
-      .slide { min-height: 100vh; break-after: page; padding: 48px; }
-      .appendix { break-before: page; }
-    }
+    :root { --paper:#fff; --ink:#0E0E0C; --ink2:#2C2B27; --mute:#6B6A66; --mute2:#9A9A95; --line:#E8E8E6; --line2:#DADAD7; --accent:#3B5BFF; --soft:#F7F7F4; --soft2:#F1F1EF; --dark:#0E0E0C; --gutter:clamp(18px,4.8vw,70px); --top:clamp(68px,8vh,105px); --h1:clamp(54px,9vw,132px); --h2:clamp(42px,6.1vw,92px); --lede:clamp(22px,2.35vw,34px); --body:clamp(18px,1.55vw,24px); }
+    *{box-sizing:border-box} html{scroll-behavior:smooth;background:var(--paper);color:var(--ink)} body{margin:0;font-family:Suisse,Inter,system-ui,sans-serif;color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased;text-rendering:geometricPrecision}
+    body:before{content:"";position:fixed;inset:0;pointer-events:none;background:linear-gradient(90deg,transparent 0,transparent calc(var(--gutter) - 1px),var(--line) calc(var(--gutter) - 1px),var(--line) var(--gutter),transparent var(--gutter)),linear-gradient(90deg,transparent 0,transparent calc(100vw - var(--gutter)),var(--line) calc(100vw - var(--gutter)),var(--line) calc(100vw - var(--gutter) + 1px),transparent calc(100vw - var(--gutter) + 1px));z-index:1}
+    .topbar{position:fixed;z-index:20;top:0;left:0;right:0;display:grid;grid-template-columns:1fr auto 1fr;gap:16px;align-items:center;padding:14px var(--gutter) 12px;border-bottom:1px solid var(--line);background:rgba(255,255,255,.82);backdrop-filter:blur(18px);font-family:SuisseMono,monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--mute)} .topbar b{color:var(--ink);font-weight:400} .topbar .mid{color:var(--accent)} .topbar .right{text-align:right}
+    .progress{position:fixed;top:42px;left:0;height:2px;background:var(--accent);width:0;z-index:30}
+    .slide{min-height:100vh;padding:var(--top) var(--gutter) clamp(44px,6vh,76px);display:grid;align-content:center;position:relative;border-bottom:1px solid var(--line);z-index:2} @supports(height:100svh){.slide{min-height:100svh}}
+    .slide-inner{width:min(100%,1480px);margin:0 auto;display:grid;gap:clamp(24px,4vw,56px)} .split{display:grid;grid-template-columns:minmax(0,1fr) minmax(330px,.76fr);gap:clamp(30px,5vw,88px);align-items:end} .hero-split{align-items:center}
+    .eyebrow{display:flex;align-items:center;gap:10px;font-family:SuisseMono,monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--mute);margin-bottom:18px} .eyebrow:before{content:"";width:6px;height:6px;border-radius:50%;background:var(--accent)}
+    h1,h2,h3,p{margin:0} h1,h2{font-weight:400;line-height:.98;letter-spacing:-.038em;max-width:14ch} h1{font-size:var(--h1)} h2{font-size:var(--h2)} h3{font-size:clamp(26px,2.7vw,42px);font-weight:400;letter-spacing:-.035em;line-height:1.02} .lede{font-size:var(--lede);line-height:1.08;letter-spacing:-.035em;max-width:42ch} .muted{color:var(--mute)}
+    .talk-card{border:1px solid var(--line2);border-radius:16px;background:linear-gradient(135deg,var(--soft),var(--soft2));padding:clamp(22px,3vw,38px);display:grid;gap:18px;box-shadow:0 24px 70px rgba(14,14,12,.05)} .talk-card p{font-size:var(--lede);line-height:1.1;letter-spacing:-.035em} .talk-card .muted{font-size:clamp(18px,1.55vw,24px);line-height:1.22;letter-spacing:-.02em}
+    .mini-grid,.connector-map,.method-grid,.two-cards{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:18px;overflow:hidden} .mini-grid{grid-template-columns:repeat(5,1fr)} .mini,.connector,.method-card{background:var(--paper);padding:clamp(18px,2vw,28px);min-height:170px;display:flex;flex-direction:column;justify-content:space-between;gap:20px} .mini b,.connector b,.method-card b{font-size:clamp(20px,1.8vw,27px);font-weight:400;letter-spacing:-.025em;line-height:1.04} .mini span,.connector span,.method-card span,.card p{font-size:clamp(15px,1.18vw,19px);line-height:1.28;color:var(--mute)} .bottom-line{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:18px;overflow:hidden} .bottom-line span,.bottom-line strong{background:var(--paper);padding:clamp(20px,2vw,28px);font-size:clamp(22px,2.1vw,32px);font-weight:400;line-height:1.07;letter-spacing:-.035em} .bottom-line strong{color:var(--accent)}
+    .chips{display:flex;flex-wrap:wrap;gap:10px;max-width:1100px} .chips span{font-size:clamp(24px,3.2vw,52px);line-height:1;border:1px solid var(--line2);border-radius:999px;padding:.22em .42em .28em;background:var(--paper);letter-spacing:-.045em}
+    .quote{font-size:clamp(36px,5.2vw,86px);line-height:.98;letter-spacing:-.05em;border:1px solid var(--line2);border-radius:18px;background:var(--dark);color:#fff;padding:clamp(28px,4vw,58px);max-width:1180px} .smallq{font-size:clamp(28px,3.1vw,52px);background:var(--paper);color:var(--ink)}
+    .flowmap{display:grid;grid-template-columns:1fr auto 1fr;gap:18px;align-items:stretch} .flowmap>div:not(.arrow){border:1px solid var(--line2);border-radius:18px;background:var(--paper);padding:clamp(24px,3vw,42px);display:grid;gap:20px} .flowmap p{font-size:var(--body);line-height:1.2;color:var(--mute)} .arrow{display:grid;place-items:center;color:var(--accent);font-family:SuisseMono,monospace;font-size:clamp(30px,5vw,70px)} .tag{font-family:SuisseMono,monospace;font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent)}
+    .connector-map{grid-template-columns:repeat(3,1fr)} .connector{min-height:188px} .connector b{color:var(--accent)}
+    .ladder{display:grid;grid-template-columns:repeat(7,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:18px;overflow:hidden} .step{background:var(--paper);min-height:230px;padding:clamp(16px,1.8vw,26px);display:flex;flex-direction:column;justify-content:space-between;gap:20px} .step span{font-family:SuisseMono,monospace;color:var(--mute2);font-size:12px;letter-spacing:.18em} .step p{font-size:clamp(18px,1.55vw,24px);line-height:1.08;letter-spacing:-.025em}
+    .rail{border-left:2px solid var(--accent);padding-left:20px;font-size:clamp(20px,1.8vw,29px);line-height:1.14;letter-spacing:-.03em;color:var(--ink2);max-width:48ch}
+    .card{background:var(--paper);border:1px solid var(--line2);border-radius:18px;padding:clamp(22px,3vw,38px);display:grid;gap:24px} .two-cards{grid-template-columns:1fr 1fr;background:transparent;border:0;overflow:visible;gap:14px}
+    .method-grid{grid-template-columns:repeat(4,1fr)} .method-card{min-height:210px}
+    .rdah{display:grid;grid-template-columns:repeat(4,1fr);gap:14px} .rdah-card{border:1px solid var(--line2);border-radius:18px;background:var(--paper);padding:clamp(22px,2.8vw,38px);min-height:260px;display:flex;flex-direction:column;gap:18px;justify-content:space-between} .rdah-card strong{font-size:clamp(64px,8vw,126px);line-height:.82;color:var(--accent);font-weight:400;letter-spacing:-.08em} .rdah-card b{font-size:clamp(22px,2vw,32px);font-weight:400;letter-spacing:-.03em} .rdah-card span{font-size:clamp(16px,1.3vw,20px);line-height:1.25;color:var(--mute)}
+    .skill-list{display:grid;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:18px;overflow:hidden} .skill-row{display:grid;grid-template-columns:86px 1fr;background:var(--paper);align-items:center} .skill-row span{font-family:SuisseMono,monospace;color:var(--accent);padding:22px;font-size:12px;letter-spacing:.18em} .skill-row p{padding:20px 24px;border-left:1px solid var(--line);font-size:clamp(20px,1.8vw,29px);line-height:1.12;letter-spacing:-.03em}
+    .cta-band{display:flex;align-items:center;justify-content:space-between;gap:18px;border-radius:999px;border:1px solid var(--line2);padding:14px 18px;font-family:SuisseMono,monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;width:min(100%,620px)} a{color:inherit;text-decoration:none} .cta-band a{color:var(--accent)} .slide-no{position:absolute;right:var(--gutter);bottom:18px;font-family:SuisseMono,monospace;font-size:10px;letter-spacing:.18em;color:var(--mute2)}
+    .appendix{padding:70px var(--gutter);background:var(--dark);color:#fff;display:grid;gap:22px} .appendix h2{color:#fff;max-width:18ch} .appendix p{color:rgba(255,255,255,.72)} .actions{display:flex;gap:12px;flex-wrap:wrap} .button{border:1px solid rgba(255,255,255,.24);border-radius:999px;padding:13px 17px 12px;font-family:SuisseMono,monospace;font-size:11px;letter-spacing:.15em;text-transform:uppercase} .button.primary{background:var(--accent);border-color:var(--accent)} details{border:1px solid rgba(255,255,255,.14);border-radius:14px;overflow:hidden} summary{padding:16px 18px;cursor:pointer;font-family:SuisseMono,monospace;letter-spacing:.13em;text-transform:uppercase;font-size:11px} pre{white-space:pre-wrap;margin:0;padding:0 18px 22px;color:rgba(255,255,255,.78);font-size:13px;line-height:1.5;font-family:SuisseMono,monospace}
+    @media(max-width:1050px){.split,.flowmap,.bottom-line{grid-template-columns:1fr}.mini-grid,.connector-map{grid-template-columns:repeat(2,1fr)}.method-grid,.rdah,.ladder{grid-template-columns:1fr 1fr}.arrow{justify-content:start;transform:rotate(90deg);height:42px}}
+    @media(max-width:680px){body:before{display:none}.topbar{grid-template-columns:1fr;font-size:10px}.topbar .mid,.topbar .right{display:none}.slide{padding-top:88px}h1{font-size:clamp(48px,15vw,68px)}h2{font-size:clamp(38px,12vw,56px)}.mini-grid,.connector-map,.method-grid,.rdah,.ladder,.two-cards{grid-template-columns:1fr}.step,.mini,.connector,.method-card,.rdah-card{min-height:auto}.quote{font-size:clamp(30px,9vw,46px)}.slide-no{display:none}}
   </style>
 </head>
 <body>
-  <div class="topbar"><div class="brand">SILOW</div><div class="middle">YANDEX AI WORKSHOP · 2026</div><div class="right">scroll presentation</div></div>
+  <div class="topbar"><b>SILOW</b><span class="mid">YANDEX AI WORKSHOP · GPT-edited v5</span><span class="right">scroll, not deck viewer</span></div>
   <div class="progress" id="progress"></div>
-
   <main>
-    <section class="slide" id="s1">
-      <div class="slide-inner split">
-        <div>
-          <div class="eyebrow">01 · opening</div>
-          <h1>AI есть. В работе его не видно.</h1>
-        </div>
-        <div class="rail-note">
-          Поднимите руку, у кого за последний год было обучение по AI. А теперь честно: по календарю, почте и задачам видно, что работа изменилась?
-        </div>
-      </div>
-      <div class="footer-note"><span>AI-слепота</span><span>Не следующий курс. Новая модель работы.</span></div>
-    </section>
-
-    <section class="slide" id="s2">
-      <div class="slide-inner split top">
-        <div>
-          <div class="eyebrow">02 · l&d не виноваты</div>
-          <h2>Обучение нужно. Но вопрос второй.</h2>
-        </div>
-        <div class="process">
-          <div class="step"><span class="num">A</span><span>L&D уже сделали необходимую часть: язык, базовый навык, уверенность, первые пробы.</span></div>
-          <div class="step"><span class="num">B</span><span>Но курс один не меняет устройство работы.</span></div>
-          <div class="step"><span class="num">C</span><span class="blue">Главный вопрос: как должна измениться сама работа, чтобы AI стал частью процесса?</span></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="slide" id="s3">
-      <div class="slide-inner">
-        <div class="eyebrow">03 · старая модель</div>
-        <div class="bigline">Люди ведут процесс. AI иногда помогает.</div>
-        <div class="cards">
-          <div class="card"><span class="tag">пример</span><h3>Входящая заявка клиента</h3><p>Человек читает письмо, открывает CRM, ищет историю, проверяет документы, пишет коллеге, копирует данные, готовит черновик, обновляет статус.</p></div>
-          <div class="card"><span class="tag">AI</span><h3>Помог сформулировать ответ</h3><p>Полезно. Но порядок работы не изменился.</p></div>
-          <div class="card"><span class="tag">итог</span><h3>Человек — живая интеграция</h3><p>Он всё ещё стартует каждый микрошаг между почтой, CRM, чатами, документами и согласованиями.</p></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="slide" id="s4">
-      <div class="slide-inner split">
-        <div>
-          <div class="eyebrow">04 · почему навык не переносится</div>
-          <h2>Если система требует ручной сборки, человек будет собирать руками.</h2>
-        </div>
-        <div class="rail-note">
-          Даже если он умеет писать хорошие промпты. Поэтому вопрос не «почему люди не пользуются AI активнее». Вопрос: почему стандартный шаг до сих пор начинается с человека?
-        </div>
-      </div>
-    </section>
-
-    <section class="slide" id="s5">
-      <div class="slide-inner">
-        <div class="eyebrow">05 · новая модель</div>
-        <div class="quote">Агент владеет рутиной. Человек владеет результатом.</div>
-        <div class="flow">
-          <div class="card outline"><span class="tag">агент первым</span><h3>Собирает стандартный контекст</h3><p>Кто клиент, какая история, какие документы есть, чего не хватает, какой тип запроса, какой следующий шаг по правилу.</p></div>
-          <div class="arrow">→</div>
-          <div class="card"><span class="tag">человек в точке качества</span><h3>Проверяет исключение и решение</h3><p>Верно ли классифицирован запрос, есть ли риск, можно ли отправлять, что нужно решить самому.</p></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="slide" id="s6">
-      <div class="slide-inner split top">
-        <div>
-          <div class="eyebrow">06 · граница</div>
-          <h2>Это не замена людей.</h2>
-          <p class="lede muted">Это замена ручного старта стандартных шагов.</p>
-        </div>
-        <div class="cards" style="grid-template-columns:1fr;">
-          <div class="card small"><h3>Агенту</h3><p>Сборка контекста, сверка полей, черновик маршрута, напоминание, статус, проверка полноты.</p></div>
-          <div class="card small"><h3>Человеку</h3><p>Клиент, исключение, качество, решение, ответственность.</p></div>
-          <div class="card small"><h3>Процессы, не люди</h3><p>Считаем ручные передачи и повторяемые шаги. Никаких персональных рейтингов. Никакой новой витрины «кто как работает».</p></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="slide" id="s7">
-      <div class="slide-inner split">
-        <div>
-          <div class="eyebrow">07 · Silow появляется здесь</div>
-          <h2>Что видно, когда смотришь на работу.</h2>
-        </div>
-        <div class="process">
-          <div class="step"><span class="num">01</span><span>В сервисной компании в Дубае снаружи казалось: нужно ещё обучение.</span></div>
-          <div class="step"><span class="num">02</span><span>Разбор работы показал другое: ручные передачи между письмами, документами, чатами, порталами, проверками и статусами.</span></div>
-          <div class="step"><span class="num">03</span><span class="blue">Проблема была не в навыке. Стандартные шаги процесса всё ещё начинались с человека.</span></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="slide" id="s8">
-      <div class="slide-inner">
-        <div class="eyebrow">08 · тот же процесс после разворота</div>
-        <div class="flow">
-          <div class="card"><span class="tag">до</span><h3>Заявка приходит человеку</h3><ul><li>собрать контекст</li><li>найти документы</li><li>написать уточнения</li><li>подготовить черновик</li><li>обновить статус</li></ul></div>
-          <div class="arrow">→</div>
-          <div class="card"><span class="tag">после</span><h3>Заявка приходит в процесс</h3><ul><li>агент собирает контекст</li><li>проверяет полноту</li><li>готовит маршрут и черновик</li><li>человек принимает исключение и качество</li><li>агент ведёт следующий шаг</li></ul></div>
-        </div>
-        <p class="lede">Исключения, клиенты и качество получают время, которое раньше съедала ручная сборка.</p>
-      </div>
-    </section>
-
-    <section class="slide" id="s9">
-      <div class="slide-inner">
-        <div class="eyebrow">09 · чему теперь учить</div>
-        <h2>L&D учит не просто пользователей AI. L&D учит управлять агентной работой.</h2>
-        <div class="cards">
-          <div class="card"><span class="tag">навык 1</span><h3>Задать вход и границу</h3><p>Что агент получает, что делает сам, где обязан остановиться.</p></div>
-          <div class="card"><span class="tag">навык 2</span><h3>Принять результат</h3><p>Быстро принять или отклонить по критерию, не переписывая всё руками.</p></div>
-          <div class="card"><span class="tag">навык 3</span><h3>Вернуть правило</h3><p>Разобрать исключение и превратить его в новое правило процесса.</p></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="slide" id="s10">
-      <div class="slide-inner split">
-        <div>
-          <div class="eyebrow">10 · новая роль L&D</div>
-          <h2>Инструменты устареют. Рабочая привычка останется.</h2>
-        </div>
-        <div class="rail-note">
-          L&D может стать функцией, которая переводит компанию на агентную работу: выбрать процесс, назвать границу, описать критерий качества, обучить новый способ приёмки результата.
-        </div>
-      </div>
-    </section>
-
-    <section class="slide" id="s11">
-      <div class="slide-inner split top">
-        <div>
-          <div class="eyebrow">11 · где здесь Silow</div>
-          <h2>Мы начинаем не с модели. Мы начинаем с реальной работы.</h2>
-        </div>
-        <div class="process">
-          <div class="step"><span class="num">01</span><span>Восстанавливаем процессы как есть: маршруты задач по рабочим артефактам и ролям.</span></div>
-          <div class="step"><span class="num">02</span><span>Определяем, где агент берёт стандартный слой, а где человек остаётся.</span></div>
-          <div class="step"><span class="num">03</span><span>Собираем агентов, подбираем инструменты и промпты, запускаем с human approval.</span></div>
-          <div class="step"><span class="num">04</span><span class="blue">Мерим до/после. Если шаг не даёт эффекта — не продаём его как эффект.</span></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="slide" id="s12">
-      <div class="slide-inner">
-        <div class="eyebrow">12 · close</div>
-        <h2>AI не бустит компанию, пока живёт во вкладке рядом со старой работой.</h2>
-        <div class="quote">Какая часть этой работы больше не должна начинаться с человека?</div>
-        <p class="lede muted">Выберите один повторяемый процесс. С этого начинается настоящая AI-грамотность компании.</p>
-      </div>
-      <div class="footer-note"><span>silow.ai</span><span>nikita@silow.ai</span></div>
-    </section>
+    <section class="slide" id="s1"><div class="slide-inner">
+        <div class="split hero-split">
+          <div><div class="eyebrow"><span>01 · opening</span></div><h1>AI есть. В работе его не видно.</h1></div>
+          <div class="talk-card"><p>Поднимите руку, у кого за последний год было обучение по AI. Теперь второй вопрос: если открыть календарь, почту и задачи до обучения и сейчас — мы увидим разницу?</p><p class="muted">Часто нет. AI появился в разговорах, презентациях и списке доступных инструментов, но в самой работе он живёт где-то сбоку.</p></div>
+        </div></div><div class="slide-no">01 / 15</div></section><section class="slide" id="s2"><div class="slide-inner"><div class="eyebrow"><span>02 · что уже учат</span></div><h2>Чему чаще всего учат сейчас.</h2><div class="mini-grid five"><div class="mini"><b>Генеративный AI</b><span>как работает и почему ему нельзя слепо доверять</span></div><div class="mini"><b>Промпты</b><span>роль, контекст, формат, ограничения, примеры</span></div><div class="mini"><b>Сценарии</b><span>письмо, саммари, идеи, презентация, анализ, перевод, код</span></div><div class="mini"><b>Безопасность</b><span>персональные данные, коммерческая тайна, что нельзя отправлять</span></div><div class="mini"><b>Инструменты</b><span>ChatGPT, YandexGPT, Copilot, Gemini, Claude, внутренние ассистенты</span></div></div><div class="bottom-line"><span>Это хороший первый слой. Без него правда нельзя. Но он отвечает на вопрос: как человеку пользоваться AI?</span><strong>Бизнес-эффект чаще лежит в другом вопросе: какая часть процесса больше не должна начинаться с человека?</strong></div></div><div class="slide-no">02 / 15</div></section><section class="slide" id="s3"><div class="slide-inner"><div class="split"><div><div class="eyebrow"><span>03 · роль L&amp;D</span></div><h2>Обучение нужно. Но это только первый шаг.</h2></div><p class="lede">L&amp;D уже сделали важную работу: дали язык, базовый навык, первые пробы и правила безопасности. Дальше нужно перевести AI из навыка отдельного сотрудника в устройство процесса.</p></div></div><div class="slide-no">03 / 15</div></section><section class="slide" id="s4"><div class="slide-inner"><div class="eyebrow"><span>04 · старая модель</span></div><h2>Люди ведут процесс. AI иногда помогает.</h2><div class="chips"><span>письмо</span><span>CRM</span><span>история</span><span>документы</span><span>чат</span><span>шаблон</span><span>черновик</span><span>напоминание</span><span>статус</span></div><div class="quote smallq">AI помог с текстом. Пять минут сэкономили. Но порядок работы не изменился.</div></div><div class="slide-no">04 / 15</div></section><section class="slide" id="s5"><div class="slide-inner"><div class="split"><div><div class="eyebrow"><span>05 · почему не переносится</span></div><h2>Если работа требует ручной сборки, человек будет собирать руками.</h2></div><p class="lede">Заявка всё равно приходит в почту. История лежит в CRM. Документы в папке. Уточнение в чате. Статус руками. После обучения полезно смотреть не только на “кто использовал AI”, а на процесс.</p></div></div><div class="slide-no">05 / 15</div></section><section class="slide" id="s6"><div class="slide-inner"><div class="eyebrow"><span>06 · новая модель</span></div><h2>Агент владеет рутиной. Человек владеет результатом.</h2><div class="flowmap"><div><span class="tag">агент первым</span><h3>Собирает контекст</h3><p>клиент, история, документы, недостающие поля, тип запроса, следующий шаг</p></div><div class="arrow">→</div><div><span class="tag">человек в точке качества</span><h3>Проверяет решение</h3><p>классификация, риск, исключение, тон ответа, ответственность</p></div></div></div><div class="slide-no">06 / 15</div></section><section class="slide" id="s7"><div class="slide-inner"><div class="eyebrow"><span>07 · connectors</span></div><h2>Коннекторы: где AI становится частью процесса.</h2><p class="lede">Чтобы агент работал не как чат, ему нужны связи с рабочими системами.</p><div class="connector-map"><div class="connector"><b>Mail / Calendar</b><span>входящие, дедлайны, встречи, follow-up</span></div><div class="connector"><b>CRM</b><span>клиент, статус, история, следующий шаг</span></div><div class="connector"><b>Docs</b><span>Drive, SharePoint, Confluence, шаблоны, политики, договоры</span></div><div class="connector"><b>Tasks</b><span>Jira, Linear, Asana, Notion, владелец и блокер</span></div><div class="connector"><b>Chats</b><span>Slack, Teams, Telegram, рабочие сигналы и согласования</span></div><div class="connector"><b>Automation layer</b><span>API, базы, RPA, n8n, Make, Zapier, MCP</span></div></div><p class="rail">Без коннекторов AI остаётся умным окном. С коннекторами он становится частью процесса.</p></div><div class="slide-no">07 / 15</div></section><section class="slide" id="s8"><div class="slide-inner"><div class="eyebrow"><span>08 · safe setup</span></div><h2>Как это сетапить безопасно.</h2><div class="ladder"><div class="step"><span>01</span><p>один повторяемый процесс</p></div><div class="step"><span>02</span><p>вход, выход, критерий “готово”</p></div><div class="step"><span>03</span><p>коннекторы сначала read-only</p></div><div class="step"><span>04</span><p>маленькая draft-задача</p></div><div class="step"><span>05</span><p>human approval на любое действие</p></div><div class="step"><span>06</span><p>лог решений: принято / отклонено / почему</p></div><div class="step"><span>07</span><p>одно новое правило в неделю</p></div></div><p class="rail">Каждую неделю добавляйте одно новое правило. Не десять. Одно.</p></div><div class="slide-no">08 / 15</div></section><section class="slide" id="s9"><div class="slide-inner"><div class="eyebrow"><span>09 · trust boundary</span></div><h2>Это не замена людей.</h2><div class="two-cards"><div class="card "><h3>Агенту</h3><p>сборка контекста, сверка полей, черновик маршрута, напоминания, статусы, проверка полноты</p></div><div class="card "><h3>Человеку</h3><p>клиент, исключение, качество, решение, ответственность</p></div></div><div class="quote smallq">Процессы, не люди. Никаких персональных рейтингов. Никакой витрины “кто как работает”.</div></div><div class="slide-no">09 / 15</div></section><section class="slide" id="s10"><div class="slide-inner"><div class="eyebrow"><span>10 · no recording</span></div><h2>Как делать это без записи работы.</h2><p class="lede">Начать можно без записи: process clinic, дневник ручных повторов, экспорт из систем, screen-share shadowing.</p><div class="method-grid"><div class="method-card"><b>Process clinic</b><span>90 минут: один живой кейс, вход, ожидание, копипаст, согласование, риск</span></div><div class="method-card"><b>Дневник повторов</b><span>три человека, три дня: что делали второй раз, где искали, где ждали</span></div><div class="method-card"><b>Экспорт из систем</b><span>статусы тикетов, время между этапами, календарь, CRM, документы, audit log</span></div><div class="method-card"><b>Screen-share shadowing</b><span>смотрим процесс, фиксируем структуру работы, не личную эффективность</span></div></div><p class="rail">Запись работы может ускорить карту. Но начинать можно с карты процесса и артефактов.</p></div><div class="slide-no">10 / 15</div></section><section class="slide" id="s11"><div class="slide-inner"><div class="eyebrow"><span>11 · workshop</span></div><h2>Практика для зала: R / D / A / H.</h2><p class="lede">Возьмите один процесс и разложите его на вход, контекст, решение, действие и проверку.</p><div class="rdah"><div class="rdah-card"><strong>R</strong><b>Read</b><span>агент может читать</span></div><div class="rdah-card"><strong>D</strong><b>Draft</b><span>агент готовит черновик</span></div><div class="rdah-card"><strong>A</strong><b>Approval</b><span>действует только после подтверждения</span></div><div class="rdah-card"><strong>H</strong><b>Human</b><span>здесь остаётся человек</span></div></div><p class="rail">Такая карта часто полезнее ещё одного списка промптов.</p></div><div class="slide-no">11 / 15</div></section><section class="slide" id="s12"><div class="slide-inner"><div class="eyebrow"><span>12 · curriculum</span></div><h2>Что тогда учить.</h2><p class="lede">L&amp;D учит людей управлять агентной работой, а не просто пользоваться чат-ботом.</p><div class="skill-list"><div class="skill-row"><span>01</span><p>ставить вход, критерий “готово” и границу</p></div><div class="skill-row"><span>02</span><p>принимать результат по правилу, не переписывая всё с нуля</p></div><div class="skill-row"><span>03</span><p>разбирать исключение и возвращать новое правило в процесс</p></div><div class="skill-row"><span>04</span><p>понимать коннекторы и права доступа</p></div><div class="skill-row"><span>05</span><p>честно объяснять команде, что автоматизируем и какие данные не трогаем</p></div></div><p class="rail">Это ближе к управлению работой, чем к промпт-инжинирингу.</p></div><div class="slide-no">12 / 15</div></section><section class="slide" id="s13"><div class="slide-inner"><div class="split"><div><div class="eyebrow"><span>13 · measured work</span></div><h2>Что видно, когда смотришь на работу.</h2></div><div class="talk-card"><p>В Silow мы начинаем не с вопроса “кто как использует AI”, а с того, как задача проходит через системы и людей.</p><p class="muted">В одном кейсе снаружи казалось, что нужно ещё обучение. Карта показала ручные передачи, ожидания и стандартные шаги, которые всё ещё начинались с человека.</p></div></div></div><div class="slide-no">13 / 15</div></section><section class="slide" id="s14"><div class="slide-inner"><div class="split"><div><div class="eyebrow"><span>14 · silow method</span></div><h2>Как Silow помогает.</h2></div><div class="talk-card"><p>Мы восстанавливаем процессы как есть, показываем ожидания и повторы, подключаем коннекторы, собираем agents, ставим approval и мерим до/после.</p><p class="muted">Смысл — увидеть, какой шаг больше не должен начинаться с человека.</p></div></div></div><div class="slide-no">14 / 15</div></section><section class="slide" id="s15"><div class="slide-inner"><div class="eyebrow"><span>15 · close</span></div><h2>Если хотите начать без нас — начните.</h2><div class="quote">Возьмите один процесс. Разложите его на вход, контекст, решение, действие и проверку. Отметьте R, D, A и H. Дайте агенту один draft-шаг.</div><p class="lede muted">А если хотите сделать это на реальной рабочей карте, с измерением, коннекторами, approval и без surveillance — приходите к нам в Silow.</p><div class="cta-band"><span>silow.ai</span><a href="mailto:nikita@silow.ai">nikita@silow.ai</a></div></div><div class="slide-no">15 / 15</div></section>
   </main>
-
   <section class="appendix">
-    <div class="eyebrow">speaker materials</div>
-    <h2>Текст и ревью рядом, но сама презентация — просто страница для скролла.</h2>
-    <p class="lede">Контент проверен через Grok 4.6 и Claude Fable. Их raw-заметки сохранены отдельно; в этой версии применены must-fix: один процесс, ранняя защита L&D, anti-surveillance, Silow как метод, без обещаний «заменить операционку».</p>
-    <div class="actions">
-      <a class="button primary" href="./variant-E-agent-first-reviewed.md">открыть текст</a>
-      <a class="button" href="./review-grok-agent-first.md">Grok review</a>
-      <a class="button" href="./review-fable-agent-first.md">Fable review</a>
-    </div>
-  </section>
+    <div class="eyebrow"><span>speaker materials</span></div>
+    <h2>Текст после GPT-редактора</h2>
+    <p class="lede">В этой версии добавлены: чему обычно учат сейчас, коннекторы, безопасный setup, путь без записи работы, R/D/A/H-практика и мягкий Silow close.</p>
+    <div class="actions"><a class="button primary" href="./variant-F-gpt-editor.md">открыть текст</a><a class="button" href="./variant-F-expanded-draft.md">draft до GPT</a><a class="button" href="./review-grok-agent-first.md">Grok review</a><a class="button" href="./review-fable-agent-first.md">Fable review</a></div>
+    <details><summary>полный talk track</summary><pre># AI-слепота: чему учить после первого курса по AI
 
+---
+
+## Главная мысль
+
+AI-слепота — это когда AI в компании уже есть, а в работе его почти не видно.
+
+Люди прошли обучение. У них есть ChatGPT, YandexGPT, Copilot или внутренний ассистент. Они знают, что такое промпт. Могут попросить черновик письма, саммари встречи, план занятия, список идей.
+
+Это хороший первый слой. Без него правда нельзя.
+
+Но проходит месяц — и рабочий день выглядит почти так же: почта, CRM, таблица, чат, документ, согласование, напоминание.
+
+И это не значит, что люди плохо учились.
+
+Просто обучение инструменту само по себе не меняет процесс.
+
+Настоящий эффект появляется не там, где человек иногда зовёт AI на помощь.
+
+А там, где стандартный слой процесса начинает вести агент — до точки, где нужно человеческое решение.
+
+То есть:
+
+&gt; не человек ведёт процесс и иногда зовёт AI,  
+&gt; а агент ведёт рутину до момента, где нужен человек.
+
+Человек остаётся владельцем качества, исключений и ответственности.
+
+---
+
+## Слайд 1. AI есть. В работе его не видно.
+
+Поднимите руку, у кого в компании за последний год было обучение по AI.
+
+Теперь второй вопрос.
+
+Если открыть календарь, почту и задачи сотрудников за неделю до обучения и за прошлую неделю — мы увидим разницу?
+
+Часто нет.
+
+AI появился в разговорах. В презентациях. В списке доступных инструментов.
+
+Но в самой работе он живёт где-то сбоку.
+
+У этого состояния есть понятное название: AI-слепота.
+
+Компания уже смотрит в сторону AI, но пока не видит, где именно он должен менять работу.
+
+---
+
+## Слайд 2. Чему чаще всего учат сейчас.
+
+Большинство AI-обучений сейчас закрывают первый, нужный слой.
+
+Обычно там пять тем.
+
+Первая: как работает генеративный AI и почему ему нельзя слепо доверять.
+
+Вторая: как писать промпты. Роль, контекст, формат ответа, ограничения, примеры.
+
+Третья: типовые сценарии. Письмо, саммари, идеи, презентация, анализ текста, перевод, код.
+
+Четвёртая: безопасность. Что нельзя отправлять в модель, где персональные данные, где коммерческая тайна.
+
+Пятая: обзор инструментов. ChatGPT, YandexGPT, Copilot, Gemini, Claude, внутренние ассистенты.
+
+Это не ошибка. Это база.
+
+Но эта база отвечает на вопрос: «как человеку пользоваться AI?»
+
+А бизнес-эффект часто лежит в другом вопросе:
+
+«Какая часть процесса больше не должна начинаться с человека?»
+
+---
+
+## Слайд 3. Обучение нужно. Но это только первый шаг.
+
+Я не хочу обесценить L&amp;D. Скорее наоборот.
+
+Без первого обучения люди либо боятся AI, либо используют его как игрушку, либо случайно делают с ним опасные вещи.
+
+L&amp;D уже сделали важную работу: дали язык, базовый навык, первые пробы и правила безопасности.
+
+Но дальше начинается вторая часть.
+
+Нужно перевести AI из навыка отдельного сотрудника в устройство процесса.
+
+И здесь роль L&amp;D становится шире.
+
+Не просто «научить пользоваться инструментом», а помочь компании перестроить сам способ работы.
+
+---
+
+## Слайд 4. Старая модель: люди + агенты.
+
+Возьмём один простой пример — входящая заявка клиента.
+
+В старой модели человек читает письмо.
+
+Потом открывает CRM.
+
+Ищет историю клиента.
+
+Проверяет документы.
+
+Пишет коллеге в чат.
+
+Копирует данные в шаблон.
+
+Готовит черновик ответа.
+
+Ставит себе напоминание.
+
+Обновляет статус.
+
+И где-то в этом процессе он может открыть AI и сказать: «Помоги сформулировать ответ».
+
+AI помог. Текст стал лучше. Пять минут сэкономили.
+
+Но порядок работы не изменился.
+
+Человек всё ещё запускает каждый микрошаг.
+
+Он всё ещё живая интеграция между почтой, CRM, таблицами, чатами и документами.
+
+Это модель «люди + агенты».
+
+Люди ведут процесс. AI иногда помогает.
+
+---
+
+## Слайд 5. Почему навык не переносится в работу.
+
+Курс учит человека пользоваться инструментом.
+
+Но сама работа вокруг человека часто остаётся прежней.
+
+Заявка всё равно приходит в почту.
+
+История всё равно лежит в CRM.
+
+Документы всё равно в папке.
+
+Уточнение всё равно в чате.
+
+Статус всё равно обновляется руками.
+
+Если рабочая система требует ручной сборки, человек будет собирать руками.
+
+Даже если он умеет писать хорошие промпты.
+
+Поэтому после обучения полезно смотреть не только на вопрос: «кто использовал AI на этой неделе?»
+
+Лучше смотреть на процесс:
+
+где человек всё ещё начинает стандартный шаг, который уже может начать агент?
+
+---
+
+## Слайд 6. Новая модель: агенты + люди.
+
+Теперь тот же пример — входящая заявка клиента.
+
+Но процесс собран иначе.
+
+Заявка приходит.
+
+Агент первым собирает стандартный контекст:
+
+кто клиент, что было раньше, какие документы есть, чего не хватает, какой это тип запроса, какой следующий шаг по правилу.
+
+Потом агент готовит черновик маршрута и черновик ответа.
+
+Человек подключается не в начале хаоса, а в точке качества.
+
+Он проверяет классификацию, риск, исключение, тон ответа, решение.
+
+Агент владеет рутиной.
+
+Человек владеет результатом.
+
+Это уже модель «агенты + люди».
+
+---
+
+## Слайд 7. Коннекторы: где AI становится частью процесса.
+
+Чтобы агент работал не как чат, ему нужны коннекторы.
+
+Это не магия. Это обычные связи с рабочими системами.
+
+Почта и календарь: понять входящие, дедлайны, встречи, follow-up.
+
+CRM: увидеть клиента, статус, историю, следующий шаг.
+
+Документы и Drive/SharePoint/Confluence: найти нужный файл, шаблон, политику, старый договор.
+
+Jira, Linear, Asana, Notion: увидеть задачу, владельца, блокер, статус.
+
+Slack, Teams, Telegram: не читать всё подряд, а находить рабочие сигналы и согласования там, где они реально происходят.
+
+Внутренние API, базы, RPA, n8n, Make, Zapier, MCP-серверы: дать агенту безопасный способ читать контекст и предлагать действие.
+
+Без коннекторов AI остаётся умным окном.
+
+С коннекторами он становится частью процесса.
+
+---
+
+## Слайд 8. Как это сетапить безопасно.
+
+Практический порядок очень простой.
+
+Первое: выберите один повторяемый процесс.
+
+Не «улучшить весь HR». Не «автоматизировать продажи».
+
+Один процесс: входящая заявка, подбор кандидата, согласование договора, подготовка отчёта, обработка тикета.
+
+Второе: опишите вход, выход и критерий «готово».
+
+Откуда начинается работа? Что должно получиться? Как мы поймём, что всё сделано нормально?
+
+Третье: подключите коннекторы сначала в read-only режиме.
+
+Агент может читать контекст, но не меняет данные.
+
+Четвёртое: дайте ему маленькую задачу.
+
+Собрать контекст. Найти недостающие поля. Предложить маршрут. Подготовить черновик.
+
+Пятое: поставьте human approval на любое действие.
+
+Отправить письмо, изменить статус, создать задачу, обновить CRM — только после подтверждения человека.
+
+Шестое: ведите лог решений.
+
+Что агент предложил, что человек принял, что отклонил и почему.
+
+Седьмое: каждую неделю добавляйте одно новое правило.
+
+Не десять. Одно.
+
+Так процесс переезжает спокойно, без большого взрыва.
+
+---
+
+## Слайд 9. Это не замена людей.
+
+Здесь легко напугать команду, поэтому границу надо сказать сразу.
+
+Мы не говорим: «уберите человека».
+
+Мы говорим: уберите из дня человека стандартный слой, где не нужно человеческое суждение.
+
+Агенту можно отдать сборку контекста, сверку полей, черновик маршрута, напоминания, статусы, проверку полноты.
+
+Человеку остаются клиент, исключение, качество, решение, ответственность.
+
+И ещё одна важная граница:
+
+мы говорим про процессы, не про людей.
+
+Мы считаем ручные передачи и повторяемые шаги.
+
+Мы не оцениваем сотрудников.
+
+Никаких персональных рейтингов. Никакой витрины «кто как работает».
+
+Если команда слышит это только в конце, уже поздно.
+
+Эту границу нужно поставить в начале пилота.
+
+---
+
+## Слайд 10. Как делать это без записи работы.
+
+Не каждая компания готова сразу что-то записывать. Это нормально.
+
+Начать можно без записи работы.
+
+Первый вариант — process clinic на 90 минут.
+
+Берём один живой кейс и раскладываем его по шагам: где вход, где ожидание, где копипаст, где согласование, где риск.
+
+Второй вариант — дневник ручных повторов.
+
+Попросите трёх людей три дня коротко записывать: что пришлось сделать второй раз, где искали информацию, где ждали другого человека.
+
+Третий вариант — экспорт из систем, которые уже есть.
+
+Статусы тикетов, время между этапами, календарь встреч, CRM-изменения, список документов, audit log.
+
+Даже без экранной записи там много сигналов.
+
+Четвёртый вариант — screen-share shadowing.
+
+Человек показывает один процесс через screen share, а фасилитатор фиксирует не личную эффективность, а структуру работы.
+
+После этого уже можно выбрать один маленький агентный шаг:
+
+собрать контекст, проверить полноту, подготовить черновик, напомнить о следующем действии.
+
+Запись работы может ускорить карту.
+
+Но начинать можно с карты процесса и артефактов.
+
+---
+
+## Слайд 11. Практика для зала.
+
+Это можно сделать завтра.
+
+Выберите один процесс, который повторяется каждую неделю.
+
+Запишите его в пять колонок.
+
+Вход: откуда начинается работа.
+
+Контекст: где лежит информация, которую человек собирает руками.
+
+Решение: где нужен человеческий judgement.
+
+Действие: что меняется в системе или уходит наружу.
+
+Проверка: как понять, что результат хороший.
+
+Потом поставьте рядом с каждым шагом букву.
+
+R — агент может читать.
+
+D — агент может подготовить draft.
+
+A — агент может действовать только после approval.
+
+H — здесь остаётся человек.
+
+Такая карта часто полезнее ещё одного списка промптов.
+
+Потому что она показывает не «что спросить у AI», а где работа может начаться без ручного толчка.
+
+---
+
+## Слайд 12. Что тогда учить.
+
+Если стандартный слой ведёт агент, L&amp;D учит уже не просто «пользователей AI».
+
+L&amp;D учит людей управлять агентной работой.
+
+Первый навык: ставить агенту вход, критерий «готово» и границу.
+
+Второй: принимать результат по правилу, не переписывая всё руками с нуля.
+
+Третий: разбирать исключение и возвращать новое правило в процесс.
+
+Четвёртый: понимать коннекторы и права доступа хотя бы на практическом уровне.
+
+Что агент может читать?
+
+Что может предлагать?
+
+Что может делать только после approval?
+
+Пятый: честно объяснять команде, что мы автоматизируем, что не автоматизируем и какие данные не трогаем.
+
+Это уже ближе к управлению работой, чем к промпт-инжинирингу.
+
+---
+
+## Слайд 13. Что видно, когда смотришь на работу.
+
+В Silow мы начинаем именно с карты реальной работы.
+
+Не с абстрактного вопроса «кто как использует AI», а с того, как задача на самом деле проходит через системы и людей.
+
+В одном анонимном кейсе сервисной компании в Дубае сначала казалось, что людям просто нужно ещё обучение.
+
+Но когда мы разобрали работу как есть, стало видно другое.
+
+Операционка держалась на ручных передачах:
+
+письма, документы, чаты, порталы, проверки, статусы, ожидания.
+
+Проблема была не в том, что люди не умеют пользоваться AI.
+
+Проблема была в том, что стандартные шаги процесса всё ещё начинались с человека.
+
+---
+
+## Слайд 14. Как Silow помогает.
+
+То, что можно сделать вручную на одном процессе, Silow помогает делать системно.
+
+Мы восстанавливаем процессы как есть: маршруты задач по рабочим артефактам и ролям.
+
+Показываем, где работа ждёт, где повторяется, где человек стал интеграцией между системами.
+
+Определяем, где агент может взять стандартный слой, а где человек должен остаться.
+
+Помогаем подключить нужные коннекторы, собрать agents, поставить approval и измерить до/после.
+
+Для нас смысл не в том, чтобы дать людям ещё одну модель или ещё один чат.
+
+Смысл в том, чтобы увидеть, какой шаг в работе больше не должен начинаться с человека.
+
+---
+
+## Слайд 15. Мягкий финал.
+
+Если вы хотите начать без нас — начните.
+
+Возьмите один процесс.
+
+Разложите его на вход, контекст, решение, действие и проверку.
+
+Отметьте R, D, A и H.
+
+Подключите read-only контекст.
+
+Дайте агенту один draft-шаг. Не больше.
+
+Через неделю посмотрите, что стало легче, а что команда всё равно делает руками.
+
+А если захотите сделать это на реальной рабочей карте — с измерением, коннекторами, approval и без превращения проекта в surveillance — приходите к нам в Silow.
+
+Мы помогаем компаниям пройти путь от «люди попробовали AI» к «работа действительно начала двигаться иначе».
+
+Спасибо.
+</pre></details>
+  </section>
   <script>
-    const bar = document.getElementById('progress');
-    const setProgress = () => {
-      const max = document.documentElement.scrollHeight - innerHeight;
-      const p = max > 0 ? scrollY / max : 0;
-      bar.style.width = `${Math.max(0, Math.min(1, p)) * 100}%`;
-    };
-    addEventListener('scroll', setProgress, { passive: true });
-    addEventListener('resize', setProgress);
-    setProgress();
+    const bar=document.getElementById('progress');function setProgress(){const max=document.documentElement.scrollHeight-innerHeight;bar.style.width=(max>0?Math.min(1,Math.max(0,scrollY/max))*100:0)+'%'}addEventListener('scroll',setProgress,{passive:true});addEventListener('resize',setProgress);setProgress();
   </script>
 </body>
 </html>
